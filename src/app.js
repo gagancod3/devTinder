@@ -5,7 +5,90 @@ const User = require("./models/user");
 
 app.use(express.json());
 
-//**post API
+// **GET API /feed - to fetch all the users
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (users.length === 0) {
+      res.send("No user is present");
+    } else {
+      res.send(users);
+    }
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+// ** GET API '/user' - to fetch users with queried 'emailId'
+app.get("/user", async (req, res) => {
+  const useremail = req.body.emailId;
+  const user = await User.findOne({ emailId: useremail });
+  // console.log(user);
+  try {
+    if (user === null) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+// ** GET API '/user/id' - to fetch users with queried '_id' (default key by MongoDB)
+app.get("/user/id", async (req, res) => {
+  const userId = req.body._id;
+  // console.log(userId);
+  const user = await User.findById({ _id: userId });
+  // console.log(user);
+  try {
+    if (user === null) {
+      res.status(404).send("Id not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+// ** DELETE API '/user' - to fetch users with queried '_id' and delete it
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const user = await User.findByIdAndDelete({ _id: userId });
+  // OR
+  // const user = await User.findByIdAndDelete(userId);
+  try {
+    if (user === null) {
+      res.status(404).send("Id not found");
+    } else {
+      res.send({ message: "User got deleted", user: user });
+    }
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+// ** PUT API
+
+// ** PATCH API "/user" - to fetch users with queried '_id' and update them with
+app.patch("/user", async (req, res) => {
+  console.log(req.body.userId);
+  const userId = req.body.userId;
+  const data = req.body;
+
+  const user = await User.findOneAndUpdate({ _id: userId }, data, {
+    returnDocument: "after",
+  });
+  console.log(user);
+  try {
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+//**post API (aysnc callback function)
 app.post("/signup", async (req, res) => {
   //Creating a new instance of the User model
 
@@ -13,7 +96,7 @@ app.post("/signup", async (req, res) => {
 
   //** adding data here
 
-  // one way**
+  // **one way**
   // const userobj = {
   //   firstName: "Arun",
   //   lastName: "Singh",
@@ -22,7 +105,7 @@ app.post("/signup", async (req, res) => {
   // }
   // const user = new User (userobj);
 
-  // **another way
+  // **another way**
   // const user = new User({
   //   firstName: "Prateek",
   //   lastName: "Singh",
@@ -30,10 +113,10 @@ app.post("/signup", async (req, res) => {
   //   password: "prateek123",
   // });
 
-  // **dynamically passed object from Client API side
-    const user = new User(req.body);
+  // **dynamically passed object from Client API side**
+  const user = new User(req.body);
 
-  // **error handling
+  // **error handling**
   try {
     await user.save();
     res.send("user added succesfully");
