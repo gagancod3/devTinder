@@ -82,7 +82,24 @@ app.patch("/user", async (req, res) => {
   });
   console.log(user);
   try {
-    res.send(user);
+    res.send("user updated successfully");
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+
+// ** PATCH API "/user/email" - to fetch users with queried 'emailId' and update them with
+app.patch("/user/email", async (req, res) => {
+  console.log(req.body.emailId);
+  const emailId = req.body.emailId;
+  const data = req.body;
+
+  const user = await User.findOneAndUpdate({ emailId: emailId }, data, {
+    returnDocument: "after",
+  });
+  console.log(user);
+  try {
+    res.send("user updated successfully");
   } catch (err) {
     res.status(400).send("something went wrong");
   }
