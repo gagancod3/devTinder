@@ -149,11 +149,11 @@ app.post("/signup", async (req, res) => {
   const data = req.body;
 
   try {
-    MANDATORY_FIELDS = ["firstName", "emailId", "password", "age"];
+    MANDATORY_FIELDS = ["firstName", "lastName", "emailId", "password", "age"];
     const isCreationAllowed = Object.keys(data).every((k) =>
       MANDATORY_FIELDS.includes(k)
     );
-    console.log(isCreationAllowed);
+    // console.log(isCreationAllowed);
     if (!isCreationAllowed) {
       throw new Error("Mandatory fields must be included");
     }

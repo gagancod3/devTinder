@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const validator = require("validator");
 //Schema
 const userSchema = mongoose.Schema(
   {
@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema(
     },
     lastName: {
       type: String,
+      default: "",
       minLength: 4,
       maxLength: 50,
     },
@@ -20,12 +21,22 @@ const userSchema = mongoose.Schema(
       unique: true, // only unique key can be inserted
       lowercase: true, // converts value to lowercase
       trim: true, // removes white spaces
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("invalid email address");
+        }
+      },
     },
     password: {
       type: String,
       required: true,
       minLength: 8,
       maxLength: 50,
+        validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Enter a strong password");
+        }
+      },
     },
     age: {
       type: Number,
@@ -45,6 +56,11 @@ const userSchema = mongoose.Schema(
       type: String,
       default:
         "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.citypng.com%2Fphoto%2F19313%2Fdownload-black-male-user-profile-icon-png&psig=AOvVaw0HOXkXXHpXc4fnko1Ny96u&ust=1748347272481000&source=images&cd=vfe&opi=89978449&ved=2ahUKEwiK152ii8GNAxXD7DgGHfdaFEQQjRx6BAgAEBk",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("invalid Photo URL");
+        }
+      },
     },
     about: {
       type: String,
@@ -56,8 +72,16 @@ const userSchema = mongoose.Schema(
     },
   },
   {
-    timestamp: true, 
-    /**
+    timestamps: true,
+  }
+);
+
+//Model
+const userModel = mongoose.model("User", userSchema);
+
+module.exports = userModel;
+
+/**
      **Mongoose schemas support a timestamps option. If you set timestamps: true, Mongoose will add two properties of type Date to your schema:
 
         **createdAt: a date representing when this document was created
@@ -72,10 +96,3 @@ const userSchema = mongoose.Schema(
         const userSchema = new Schema({ name: String }, { timestamps: true });
 
      */
-  }
-);
-
-//Model
-const userModel = mongoose.model("User", userSchema);
-
-module.exports = userModel;
