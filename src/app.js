@@ -5,7 +5,7 @@ const User = require("./models/user");
 
 app.use(express.json());
 
-// **GET API /feed - to fetch all the users
+// **GET API '/feed' - to fetch all the users
 app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
@@ -71,24 +71,38 @@ app.delete("/user", async (req, res) => {
 
 // ** PUT API
 
-// ** PATCH API "/user" - to fetch users with queried '_id' and update them with
-app.patch("/user", async (req, res) => {
-  console.log(req.body.userId);
-  const userId = req.body.userId;
+// ** PATCH API '/user' - to fetch users with queried '_id' and update them with
+app.patch("/user/:userId", async (req, res) => {
+  console.log(req.params?.userId);
+  const userId = req.params?.userId;
   const data = req.body;
 
-  const user = await User.findOneAndUpdate({ _id: userId }, data, {
-    returnDocument: "after",
-  });
-  console.log(user);
   try {
+    // **Data Sanitization - API validation for fields
+    const ALLOWED_UPDATES = ["age", "gender", "skills", "about", "photoUrl"];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+    console.log(isUpdateAllowed, "flag");
+    if (!isUpdateAllowed) {
+      throw new Error("update not allowed");
+    }
+    if (data?.skills.length > 10) {
+      throw new Error("skills limit exceeded");
+    }
+    const user = await User.findOneAndUpdate({ _id: userId }, data, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    console.log(user);
+
     res.send("user updated successfully");
   } catch (err) {
-    res.status(400).send("something went wrong");
+    res.status(400).send("Update failed: " + err.message);
   }
 });
 
-// ** PATCH API "/user/email" - to fetch users with queried 'emailId' and update them with
+// ** PATCH API '/user/email' - to fetch users with queried 'emailId' and update them with
 app.patch("/user/email", async (req, res) => {
   console.log(req.body.emailId);
   const emailId = req.body.emailId;
@@ -131,12 +145,22 @@ app.post("/signup", async (req, res) => {
   // });
 
   // **dynamically passed object from Client API side**
-  const user = new User(req.body);
+  // const user = new User(req.body);
+  const data = req.body;
 
-  // **error handling**
   try {
+    MANDATORY_FIELDS = ["firstName", "emailId", "password", "age"];
+    const isCreationAllowed = Object.keys(data).every((k) =>
+      MANDATORY_FIELDS.includes(k)
+    );
+    console.log(isCreationAllowed);
+    if (!isCreationAllowed) {
+      throw new Error("Mandatory fields must be included");
+    }
+    const user = new User(data);
     await user.save();
     res.send("user added succesfully");
+    // **error handling**
   } catch (err) {
     res.status(400).send("error saving the user:" + err.message);
   }
