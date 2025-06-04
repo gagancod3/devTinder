@@ -2,8 +2,6 @@ const express = require("express");
 require("./config/database");
 const app = express();
 const User = require("./models/user");
-const ValidateSignUp = require("./utils/validation");
-const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
@@ -124,57 +122,48 @@ app.patch("/user/email", async (req, res) => {
 //**post API (aysnc callback function)
 app.post("/signup", async (req, res) => {
   //Creating a new instance of the User model
+
+  // console.log(req.body);
+
+  //** adding data here
+
+  // **one way**
+  // const userobj = {
+  //   firstName: "Arun",
+  //   lastName: "Singh",
+  //   emailId: "arun@yahoo.in",
+  //   password: "arun123",
+  // }
+  // const user = new User (userobj);
+
+  // **another way**
+  // const user = new User({
+  //   firstName: "Prateek",
+  //   lastName: "Singh",
+  //   emailId: "prateek@yahoo.in",
+  //   password: "prateek123",
+  // });
+
   // **dynamically passed object from Client API side**
+  // const user = new User(req.body);
+  const data = req.body;
+
   try {
-    const data = req.body;
-
-    // Validation of data
-    ValidateSignUp(data); //using utils function to validate the request body
-
-    const {firstName, lastName, emailId, password} = data;
-
-    // Encrypt the password
-    const saltRounds = 10;
-    const myPlaintextPassword = password;
-    const passwordHash = await bcrypt.hash(myPlaintextPassword, saltRounds); //promise 
-    
-    // console.log("passwordHash::",passwordHash);
-
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: passwordHash
-    });
+    MANDATORY_FIELDS = ["firstName", "lastName", "emailId", "password", "age"];
+    const isCreationAllowed = Object.keys(data).every((k) =>
+      MANDATORY_FIELDS.includes(k)
+    );
+    // console.log(isCreationAllowed);
+    if (!isCreationAllowed) {
+      throw new Error("Mandatory fields must be included");
+    }
+    const user = new User(data);
     await user.save();
     res.send("user added succesfully");
     // **error handling**
   } catch (err) {
-    res.status(400).send("ERROR:" + err.message);
+    res.status(400).send("error saving the user:" + err.message);
   }
-});
-
-app.post("/login", async(req,res) => {
-  try{
-  const {emailId, password} = req.body;
-
-  const user = await User.findOne({emailId: emailId});
-
-  if (!user) {
-    throw new Error('Invalid user credentials');
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.password); // compares encrypted password
-
-  if(isPasswordValid){
-    res.send('Successfully logged in');
-  }
-  else{
-    throw new Error('Invalid user credentials');
-  }
-}
-catch(err){
-  res.status(400).send('ERROR: '+ err.message);
-}
 });
 
 //**NOTE: MongoDB creates a '_id' key value in the every document inserted. Recommendation is not to alter the this '_id' key
