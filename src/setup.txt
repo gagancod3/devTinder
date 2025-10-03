@@ -1,0 +1,54 @@
+commands to setup the nodejs backend code - 
+
+# Pre-requisites:
+> Create a repository on Github for your project
+
+> Clone it on the local machine and open on VS code 
+
+Execute following steps -
+
+(I)
+
+npm init 
+
+(press enter on the terminal window to setup with default settings)
+entry point by default : index.js
+
+this will create a 'package.json' file with specified configurations
+
+(II)
+
+npm i nodemon 
+
+Inside package.json, update 'script' object
+
+"scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",  
+    
+},
+
+above update will execute -
+'node src/app.js' upon command 'npm run start'
+'nodemon src/app.js' upon command 'npm run dev'
+
+NOTE: keep other keys ('test') in scripts object keys as it is
+
+(III)
+
+create a 'src' folder inside it 'app.js'
+
+(IV)
+
+npm i express
+
+this will install node modules for expressJS
+Creates a 'node_modules' & 'package-lock.json' folder
+
+(V)
+
+we can start writing code in app.js from here.
+
+once app.js file is written
+
+we can execute it on terminal with 'npm run dev'
