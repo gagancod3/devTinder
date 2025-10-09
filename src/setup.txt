@@ -3,8 +3,36 @@ commands to setup the nodejs backend code -
 # Pre-requisites:
 > Create a repository on Github for your project
 
-> Clone it on the local machine and open on VS code 
+> Push code from local machine 
 
+    git init
+    git add .
+    git commit -m "Initial commit"
+    git branch -M main
+    git remote add origin https://github.com/yourusername/your-repo.git
+    git push -u origin main
+
+
+*OR*
+
+ Clone it on the local machine 
+
+    git clone https://github.com/username/repository.git
+    cd repository
+    git checkout -b feature-branch origin/feature-branch
+    
+    # make changes
+    
+    git add .
+    git commit -m "Commit message"
+    git push origin feature-branch
+
+
+> open on VS code 
+
+> make a '.gitignore' file and add 'node_modules' there, this will make sure git push skips mode modules folders
+
+> your package.json have all the dependencies, when we clone the project to another machine, just do 'npm install' 
 Execute following steps -
 
 (I)

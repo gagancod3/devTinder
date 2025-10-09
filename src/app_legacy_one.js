@@ -46,9 +46,9 @@ app.delete("/user", (req, res) => {
   res.send("Deleted user");
 });
 
-// **RegExp in endpoints
+// **RegExp in endpoints (Regular Expression)
 
-//optional '?'
+// '?' = optional
 
 // '^' = start of string
 
@@ -59,15 +59,15 @@ app.delete("/user", (req, res) => {
 // '*' anything like *a means anything before letter 'a'
 
 app.get(/^\/a+b$/, (req, res) => {
-  res.send("matched pattern /a+b");
+  res.send("matched pattern starts with 'a' and ends with 'b' with n number of 'a' in between it");
 });
 
 app.get(/^\/ab?c$/, (req, res) => {
-  res.send("matched pattern /ab?c");
+  res.send("matched pattern starts with 'a' and ends with 'c' and 'b' is optional. So both /abc & /ac works");
 });
 
 app.get(/^\/.*a$/, (req, res) => {
-  res.send("matched pattern /.*a");
+  res.send("matched pattern ends with 'a' and before 'a', anything is acceptable");
 });
 
 // **params
