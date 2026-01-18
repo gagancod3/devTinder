@@ -1,7 +1,6 @@
+import validate from 'validator';
 
-const validate = require('validator');
-
-const ValidateSignUp = (request) => {
+export const ValidateSignUp = (request) => {
 
     const {firstName, lastName, emailId, password} = request; // destructuring request body
 
@@ -15,5 +14,3 @@ const ValidateSignUp = (request) => {
         throw new Error('Please enter a strong password');
     }
 }
-
-module.exports = ValidateSignUp;

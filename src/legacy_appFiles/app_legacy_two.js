@@ -1,6 +1,6 @@
 // console.log("hello");
 
-const express = require("express");
+import express from "express";
 
 const app = express();
 
@@ -18,7 +18,7 @@ const app = express();
 // res.send("2nd reponse");
 // },
 // );
-const { user_auth, admin_auth } = require("./middleware/auth");
+import { user_auth, admin_auth } from "./middleware/auth.js";
 
 app.use("/user", user_auth);
 

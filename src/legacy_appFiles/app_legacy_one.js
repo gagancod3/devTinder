@@ -1,6 +1,6 @@
 // console.log("hello");
 
-const express = require("express");
+import express from "express";
 
 const app = express();
 

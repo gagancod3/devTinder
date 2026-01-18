@@ -1,10 +1,8 @@
 //* Creating server using expressJS
-const express = require("express");
+import express from "express";
 const app = express();
 
 //* on URL - localhost:7000
-
-
 
 app.use('/user', (req,res,next)=>{
     console.log('callback 1 called');
@@ -67,3 +65,5 @@ app.use('/user2', (req,res,next)=>{
 app.listen(7000, ()=> {
     console.log('server is listening on port 7000');
 });
+
+

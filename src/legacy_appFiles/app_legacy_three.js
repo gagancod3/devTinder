@@ -1,7 +1,7 @@
-const express = require("express");
-require("./config/database");
+import express from "express";
+import "../config/database";
 const app = express();
-const User = require("./models/user");
+import User from "../models/user.js";
 
 app.use(express.json());
 

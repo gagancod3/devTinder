@@ -1,6 +1,7 @@
 {
   "name": "s2_node",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",

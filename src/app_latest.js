@@ -1,8 +1,8 @@
-const express = require("express");
-require("./config/database");
+import express from "express" ;
+import("./config/database");
 const app = express();
-const User = require("./models/user");
-const ValidateSignUp = require("./utils/validation");
+import User from "./models/user.js";
+import {ValidateSignUp} from "./utils/validation.js";
 const bcrypt = require("bcrypt");
 
 app.use(express.json());
